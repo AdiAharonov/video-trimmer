@@ -1,0 +1,18 @@
+.App {
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+.video-player {
+  margin-top: 2rem;
+  border: 2px solid #ccc;
+  padding: 1rem;
+}
+
+.timeline,
+.trim-bar {
+  margin-top: 1rem;
+  background: #eee;
+  padding: 0.5rem;
+  text-align: center;
+}
