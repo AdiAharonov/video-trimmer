@@ -1,7 +1,11 @@
 .App {
   font-family: sans-serif;
   padding: 2rem;
+  text-align: center;
+  background-color: #f0f2f5;
+  min-height: 100vh;
 }
+
 
 .video-player {
   margin-top: 2rem;

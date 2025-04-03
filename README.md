@@ -76,6 +76,8 @@ vite.config.ts`
 
 -   Strict TypeScript enabled
 -   
+-   CSS Modules with Flexbox layout for `VideoPlayer`, `Timeline`, and `TrimBar`
+
 ---
 
 🧪 Testing Philosophy
