@@ -54,21 +54,22 @@ const VideoPlayer = () => {
       <input type="file" accept="video/*" onChange={handleFileChange} />
       {videoSrc && (
         <>
-          <video
-            className={styles.videoElement}
-            ref={videoRef}
-            src={videoSrc}
-            controls
-          />
-          <button onClick={togglePlay}>
-            {isPlaying ? 'Pause' : 'Play'}
-          </button>
+          <video className={styles.videoElement} ref={videoRef} src={videoSrc} controls />
+          <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
           <p>
             Time: {currentTime.toFixed(1)} / {duration.toFixed(1)} seconds
           </p>
 
           <div className={styles.timeline}>
-            <Timeline currentTime={currentTime} duration={duration} />
+            <Timeline
+              currentTime={currentTime}
+              duration={duration}
+              onSeek={(time) => {
+                if (videoRef.current) {
+                  videoRef.current.currentTime = time;
+                }
+              }}
+            />
           </div>
           <div className={styles.trimBar}>
             <TrimBar />
