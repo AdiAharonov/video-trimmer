@@ -4,7 +4,8 @@ import TrimBar from './TrimBar';
 import styles from '../styles/VideoPlayer.module.css';
 
 // Icons
-import { FaUpload } from 'react-icons/fa';
+import { FaUpload, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
+import { MdContentCut } from 'react-icons/md';
 
 const VideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -104,21 +105,27 @@ const VideoPlayer = () => {
           <video className={styles.videoElement} ref={videoRef} src={videoSrc} controls />
 
           <div className={styles.buttonGroup}>
-            <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
+            <button onClick={togglePlay} className={styles.actionButton}>
+              {isPlaying ? <FaPause /> : <FaPlay />} {isPlaying ? 'Pause' : 'Play'}
+            </button>
 
             <button
               onClick={previewTrimmed}
               disabled={trimEnd <= trimStart}
-              style={{ marginLeft: '1rem' }}
+              className={styles.actionButton}
             >
-              Preview Trimmed
+              <MdContentCut style={{ marginRight: 4 }} />
+              Preview Trim
             </button>
+
             <button
               onClick={() => alert('Export is not yet implemented.')}
               disabled
-              title="Exporting would require a video processing tool like ffmpeg.wasm or a backend"
+              title="Exporting would require ffmpeg.wasm or a backend service"
+              className={styles.actionButton}
             >
-              Export Trimmed (coming soon)
+              <FaDownload style={{ marginRight: 4 }} />
+              Export Trim
             </button>
           </div>
 
