@@ -200,6 +200,7 @@ const VideoPlayer = () => {
               setTrimStart={setTrimStart}
               setTrimEnd={setTrimEnd}
               thumbnails={thumbnails}
+              currentTime={currentTime} 
             />
           </div>
         </>

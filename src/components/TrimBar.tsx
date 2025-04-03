@@ -7,6 +7,7 @@ interface TrimBarProps {
   setTrimStart: (time: number) => void;
   setTrimEnd: (time: number) => void;
   thumbnails: string[];
+  currentTime: number;
 }
 
 const TrimBar = ({
@@ -16,6 +17,7 @@ const TrimBar = ({
   setTrimStart,
   setTrimEnd,
   thumbnails,
+  currentTime,
 }: TrimBarProps) => {
   const barRef = useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = useState<'start' | 'end' | null>(null);
@@ -46,12 +48,12 @@ const TrimBar = ({
 
   const startPercent = (trimStart / duration) * 100;
   const endPercent = (trimEnd / duration) * 100;
-
+  const currentPercent = (currentTime / duration) * 100;
 
   return (
     <>
-          {/* Time bubbles */}
-          {hoveredHandle === 'start' && (
+      {/* Time bubbles */}
+      {hoveredHandle === 'start' && (
         <div
           style={{
             position: 'absolute',
@@ -89,119 +91,131 @@ const TrimBar = ({
         </div>
       )}
 
-<div
-      ref={barRef}
-      style={{
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        background: '#2c2c2c',
-        borderRadius: '8px',
-        userSelect: 'none',
-        overflow: 'hidden',
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-    >
-      {/* Thumbnails background */}
       <div
+        ref={barRef}
         style={{
-          display: 'flex',
           width: '100%',
           height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 0,
+          position: 'relative',
+          background: '#2c2c2c',
+          borderRadius: '8px',
+          userSelect: 'none',
+          overflow: 'hidden',
         }}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
-        {thumbnails.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt={`Thumbnail ${i}`}
-            style={{
-              flex: 1,
-              objectFit: 'cover',
-              height: '100%',
-            }}
-          />
-        ))}
+        {/* Thumbnails background */}
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 0,
+          }}
+        >
+          {thumbnails.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={`Thumbnail ${i}`}
+              style={{
+                flex: 1,
+                objectFit: 'cover',
+                height: '100%',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Dark overlays outside trim range */}
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            width: `${startPercent}%`,
+            height: '100%',
+            background: 'rgba(0,0,0,0.6)',
+            zIndex: 1,
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            left: `${endPercent}%`,
+            width: `${100 - endPercent}%`,
+            height: '100%',
+            background: 'rgba(0,0,0,0.6)',
+            zIndex: 1,
+          }}
+        />
+
+        {/* Current time indicator */}
+        <div
+          style={{
+            position: 'absolute',
+            left: `${currentPercent}%`,
+            top: 0,
+            bottom: 0,
+            width: '2px',
+            backgroundColor: '#fffa',
+            zIndex: 3,
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Trimmed area highlight */}
+        <div
+          style={{
+            position: 'absolute',
+            left: `${startPercent}%`,
+            width: `${endPercent - startPercent}%`,
+            height: '100%',
+            backgroundColor: 'rgba(60, 235, 121, 0.16)',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Trim handles */}
+        <div
+          onMouseDown={() => handleMouseDown('start')}
+          onMouseEnter={() => setHoveredHandle('start')}
+          onMouseLeave={() => setHoveredHandle(null)}
+          style={{
+            position: 'absolute',
+            left: `${startPercent}%`,
+            width: '10px',
+            height: '100%',
+            backgroundColor: '#1db954',
+            cursor: 'ew-resize',
+            zIndex: 4,
+            borderRadius: '4px',
+            //   transform: 'translateX(-50%)'
+          }}
+        />
+
+        <div
+          onMouseDown={() => handleMouseDown('end')}
+          onMouseEnter={() => setHoveredHandle('end')}
+          onMouseLeave={() => setHoveredHandle(null)}
+          style={{
+            position: 'absolute',
+            left: `${endPercent}%`,
+            width: '10px',
+            height: '100%',
+            backgroundColor: '#1db954',
+            cursor: 'ew-resize',
+            zIndex: 4,
+            borderRadius: '4px',
+            transform: endPercent < 97 ? 'translateX(0)' : 'translateX(-100%)',
+          }}
+        />
       </div>
-
-      {/* Dark overlays outside trim range */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          width: `${startPercent}%`,
-          height: '100%',
-          background: 'rgba(0,0,0,0.6)',
-          zIndex: 1,
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: `${endPercent}%`,
-          width: `${100 - endPercent}%`,
-          height: '100%',
-          background: 'rgba(0,0,0,0.6)',
-          zIndex: 1,
-        }}
-      />
-
-      {/* Trimmed area highlight */}
-      <div
-        style={{
-          position: 'absolute',
-          left: `${startPercent}%`,
-          width: `${endPercent - startPercent}%`,
-          height: '100%',
-          backgroundColor: 'rgba(60, 235, 121, 0.16)',
-          zIndex: 2,
-        }}
-      />
-
-
-      {/* Trim handles */}
-      <div
-        onMouseDown={() => handleMouseDown('start')}
-        onMouseEnter={() => setHoveredHandle('start')}
-        onMouseLeave={() => setHoveredHandle(null)}
-        style={{
-          position: 'absolute',
-          left: `${startPercent}%`,
-          width: '10px',
-          height: '100%',
-          backgroundColor: '#1db954',
-          cursor: 'ew-resize',
-          zIndex: 4,
-          borderRadius: '4px',
-        //   transform: 'translateX(-50%)'
-        }}
-      />
-
-      <div
-        onMouseDown={() => handleMouseDown('end')}
-        onMouseEnter={() => setHoveredHandle('end')}
-        onMouseLeave={() => setHoveredHandle(null)}
-        style={{
-          position: 'absolute',
-          left: `${endPercent}%`,
-          width: '10px',
-          height: '100%',
-          backgroundColor: '#1db954',
-          cursor: 'ew-resize',
-          zIndex: 4,
-          borderRadius: '4px',
-          transform: endPercent < 97 ? 'translateX(0)' : 'translateX(-100%)'
-        }}
-      />
-    </div>
     </>
-
   );
 };
 
