@@ -17,6 +17,8 @@ const VideoPlayer = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [trimStart, setTrimStart] = useState<number>(0);
   const [trimEnd, setTrimEnd] = useState<number>(0);
+  const [thumbnails, setThumbnails] = useState<string[]>([]);
+  const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -58,11 +60,59 @@ const VideoPlayer = () => {
     }
   };
 
+  const generateThumbnails = async (videoDuration: number, videoSrc: string) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+  
+    const offscreenVideo = document.createElement('video');
+    offscreenVideo.src = videoSrc;
+    offscreenVideo.muted = true;
+    offscreenVideo.crossOrigin = 'anonymous';
+  
+    await new Promise<void>((resolve) => {
+      offscreenVideo.addEventListener('loadedmetadata', () => resolve());
+    });
+  
+    const frames: string[] = [];
+    const numberOfThumbnails = 10;
+    canvas.width = 160;
+    canvas.height = 90;
+  
+    for (let i = 0; i < numberOfThumbnails; i++) {
+      const time = (i / numberOfThumbnails) * videoDuration;
+  
+      await new Promise<void>((resolve) => {
+        const seekHandler = () => {
+          ctx.drawImage(offscreenVideo, 0, 0, canvas.width, canvas.height);
+          frames.push(canvas.toDataURL());
+          offscreenVideo.removeEventListener('seeked', seekHandler);
+          resolve();
+        };
+  
+        offscreenVideo.addEventListener('seeked', seekHandler);
+        offscreenVideo.currentTime = time;
+      });
+    }
+  
+    setThumbnails(frames);
+  };
+  
+  
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleLoadedMetadata = () => setDuration(video.duration);
+    const handleLoadedMetadata = () => {
+      const newDuration = video.duration;
+      setDuration(newDuration);
+
+      requestAnimationFrame(() => {
+        generateThumbnails(newDuration, video.src);
+
+      });
+    };
 
     const handleTimeUpdate = () => {
       const current = video.currentTime;
@@ -102,7 +152,12 @@ const VideoPlayer = () => {
 
       {videoSrc && (
         <>
-          <video className={styles.videoElement} ref={videoRef} src={videoSrc} controls />
+          <video
+            className={styles.videoElement}
+            ref={videoRef}
+            src={videoSrc}
+            controls={!isGeneratingThumbnails}
+          />
 
           <div className={styles.buttonGroup}>
             <button onClick={togglePlay} className={styles.actionButton}>
@@ -144,6 +199,7 @@ const VideoPlayer = () => {
               trimEnd={trimEnd}
               setTrimStart={setTrimStart}
               setTrimEnd={setTrimEnd}
+              thumbnails={thumbnails}
             />
           </div>
         </>
