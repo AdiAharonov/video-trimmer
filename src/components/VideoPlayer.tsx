@@ -119,11 +119,9 @@ const VideoPlayer = () => {
       setCurrentTime(current);
 
       if (isTrimming && current >= trimEnd - 0.05) {
-        setTimeout(() => {
           video.pause();
           setIsPlaying(false);
           setIsTrimming(false);
-        }, 10);
       }
     };
 
