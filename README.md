@@ -50,47 +50,79 @@ yarn test       # run tests`
 
 ```css
 `src/
+
 ├── components/
-│   ├── VideoPlayer.tsx
-│   ├── Timeline.tsx
-│   └── TrimBar.tsx
+
+│   ├── VideoPlayer.tsx
+
+│   ├── Timeline.tsx
+
+│   ├── TrimBar.tsx
+
+│   └── __tests__/
+
+│       └── VideoPlayer.test.tsx
+
 ├── styles/
-│   └── App.css
+
+│   ├── App.css
+
+│   └── VideoPlayer.module.css
+
 ├── App.tsx
+
 ├── main.tsx
+
+├── setupTests.ts
+
 vite.config.ts`
 ```
 
 ---
 
-✅ Features Implemented
-----------------------
+### ✅ Core Functionality
 
--   Project bootstrapped with Vite + React + TypeScript
+-   Upload a video from local file system
 
--   Basic component structure for `VideoPlayer`, `Timeline`, and `TrimBar`
+-   Display video with HTML5 `<video>` tag
 
--   ESLint & Prettier configured using Airbnb TypeScript style guide
+-   Clickable timeline to seek to any time
 
--   Vitest + Testing Library setup for unit/component testing
+-   Draggable trim handles for start/end points
 
--   Strict TypeScript enabled
+-   Preview only the selected trimmed segment without modifying the original file
 -   
--   CSS Modules with Flexbox layout for `VideoPlayer`, `Timeline`, and `TrimBar`
 
 ---
 
-🧪 Testing Philosophy
----------------------
+### ✅ Developer Features
 
-This project follows the **testing-library** approach:
+-   ESLint with Airbnb + TypeScript config
 
--   Test from the user's perspective
+-   Prettier auto-formatting
 
--   Prefer queries like `getByRole`, `getByLabelText` over implementation details
+-   Strict typing with TypeScript
 
--   Use Vitest as a fast test runner for fast feedback
+-   Fully testable React components
+
+-   `jest-dom` matchers for semantic assertions
+
+-   Mocked `URL.createObjectURL` for testing video uploads
 -   
+---
+
+🧪 Tests Included
+-----------------
+
+-   File input renders and accepts files
+
+-   Timeline and trim bar conditionally rendered
+
+-   Play/Pause toggle works as expected
+
+-   Preview trim functionality plays the defined segment
+
+-   All tests run in a `jsdom`-mocked environment 
 ---
 
 📜 License
