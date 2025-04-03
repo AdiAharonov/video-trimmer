@@ -9,6 +9,8 @@ const VideoPlayer = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [trimStart, setTrimStart] = useState(0);
+  const [trimEnd, setTrimEnd] = useState(0);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -72,7 +74,13 @@ const VideoPlayer = () => {
             />
           </div>
           <div className={styles.trimBar}>
-            <TrimBar />
+            <TrimBar
+              duration={duration}
+              trimStart={trimStart}
+              trimEnd={trimEnd}
+              setTrimStart={setTrimStart}
+              setTrimEnd={setTrimEnd}
+            />
           </div>
         </>
       )}
