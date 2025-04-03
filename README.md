@@ -91,6 +91,7 @@ vite.config.ts`
 -   Draggable trim handles for start/end points
 
 -   Preview only the selected trimmed segment without modifying the original file
+-   Export trimmed segment (UI only — requires media processing like ffmpeg)
 -   
 
 ---

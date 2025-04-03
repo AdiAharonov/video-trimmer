@@ -91,7 +91,7 @@ const VideoPlayer = () => {
         <>
           <video className={styles.videoElement} ref={videoRef} src={videoSrc} controls />
 
-          <div style={{ marginTop: '1rem' }}>
+          <div className={styles.buttonGroup}>
             <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
 
             <button
@@ -100,6 +100,13 @@ const VideoPlayer = () => {
               style={{ marginLeft: '1rem' }}
             >
               Preview Trimmed
+            </button>
+            <button
+              onClick={() => alert('Export is not yet implemented.')}
+              disabled
+              title="Exporting would require a video processing tool like ffmpeg.wasm or a backend"
+            >
+              Export Trimmed (coming soon)
             </button>
           </div>
 
