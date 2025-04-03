@@ -1,16 +1,18 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, ChangeEvent } from 'react';
 import Timeline from './Timeline';
 import TrimBar from './TrimBar';
 import styles from '../styles/VideoPlayer.module.css';
 
 const VideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
+
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isTrimming, setIsTrimming] = useState<boolean>(false);
+  const [duration, setDuration] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(0);
+  const [trimStart, setTrimStart] = useState<number>(0);
+  const [trimEnd, setTrimEnd] = useState<number>(0);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -25,13 +27,30 @@ const VideoPlayer = () => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const videoURL = URL.createObjectURL(file);
       setVideoSrc(videoURL);
       setCurrentTime(0);
       setIsPlaying(false);
+      setTrimStart(0);
+      setTrimEnd(0);
+    }
+  };
+
+  const handleSeek = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+    }
+  };
+
+  const previewTrimmed = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = trimStart;
+      videoRef.current.play();
+      setIsPlaying(true);
+      setIsTrimming(true);
     }
   };
 
@@ -40,7 +59,19 @@ const VideoPlayer = () => {
     if (!video) return;
 
     const handleLoadedMetadata = () => setDuration(video.duration);
-    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
+
+    const handleTimeUpdate = () => {
+      const current = video.currentTime;
+      setCurrentTime(current);
+
+      if (isTrimming && current >= trimEnd - 0.05) {
+        setTimeout(() => {
+          video.pause();
+          setIsPlaying(false);
+          setIsTrimming(false);
+        }, 10);
+      }
+    };
 
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('timeupdate', handleTimeUpdate);
@@ -49,15 +80,35 @@ const VideoPlayer = () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('timeupdate', handleTimeUpdate);
     };
-  }, [videoSrc]);
+  }, [videoSrc, trimEnd, isTrimming]);
 
   return (
     <div className={styles.videoPlayer}>
       <input type="file" accept="video/*" onChange={handleFileChange} />
+
       {videoSrc && (
         <>
-          <video className={styles.videoElement} ref={videoRef} src={videoSrc} controls />
-          <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
+          <video
+            className={styles.videoElement}
+            ref={videoRef}
+            src={videoSrc}
+            controls
+          />
+
+          <div style={{ marginTop: '1rem' }}>
+            <button onClick={togglePlay}>
+              {isPlaying ? 'Pause' : 'Play'}
+            </button>
+
+            <button
+              onClick={previewTrimmed}
+              disabled={trimEnd <= trimStart}
+              style={{ marginLeft: '1rem' }}
+            >
+              Preview Trimmed
+            </button>
+          </div>
+
           <p>
             Time: {currentTime.toFixed(1)} / {duration.toFixed(1)} seconds
           </p>
@@ -66,13 +117,10 @@ const VideoPlayer = () => {
             <Timeline
               currentTime={currentTime}
               duration={duration}
-              onSeek={(time) => {
-                if (videoRef.current) {
-                  videoRef.current.currentTime = time;
-                }
-              }}
+              onSeek={handleSeek}
             />
           </div>
+
           <div className={styles.trimBar}>
             <TrimBar
               duration={duration}
