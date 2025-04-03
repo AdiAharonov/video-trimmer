@@ -20,7 +20,7 @@ A modern React + TypeScript web app that allows users to interactively trim vide
 
 ### 1\. Clone the repository
 ```bash
-git clone https://github.com/<your-username>/video-trimmer.git
+git clone https://github.com/AdiAharonov/video-trimmer.git
 cd video-trimmer
 ```
 
