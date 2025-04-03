@@ -1,59 +1,97 @@
-<<<<<<< HEAD
-# React + TypeScript + Vite
+# 🎬 Video Trimmer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React + TypeScript web app that allows users to interactively trim videos. Built as a professional-level assignment using clean code principles, modern tooling, and best practices.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧰 Tech Stack
 
-## Expanding the ESLint configuration
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [ESLint](https://eslint.org/) with Airbnb + TypeScript rules
+- [Prettier](https://prettier.io/)
+- [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/)
+- [CSS Modules / Flexbox/Grid]
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📦 Getting Started
+
+### 1\. Clone the repository
+```bash
+git clone https://github.com/<your-username>/video-trimmer.git
+cd video-trimmer
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2\. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+`yarn`
 ```
-=======
-# video-trimmer
-A react typescript video trimmer app
->>>>>>> 6ecb17c9c5ea6995d2512dcbfd831cf5b75233a6
+
+### 3\. Run the development server
+
+```bash
+`yarn dev`
+```
+
+### 4\. Lint, format, and test
+
+```bash
+yarn lint       # run eslint
+yarn format     # run prettier
+yarn test       # run tests`
+```
+---
+
+📁 Project Structure
+--------------------
+
+```css
+`src/
+├── components/
+│   ├── VideoPlayer.tsx
+│   ├── Timeline.tsx
+│   └── TrimBar.tsx
+├── styles/
+│   └── App.css
+├── App.tsx
+├── main.tsx
+vite.config.ts`
+```
+
+---
+
+✅ Features Implemented
+----------------------
+
+-   Project bootstrapped with Vite + React + TypeScript
+
+-   Basic component structure for `VideoPlayer`, `Timeline`, and `TrimBar`
+
+-   ESLint & Prettier configured using Airbnb TypeScript style guide
+
+-   Vitest + Testing Library setup for unit/component testing
+
+-   Strict TypeScript enabled
+-   
+---
+
+🧪 Testing Philosophy
+---------------------
+
+This project follows the **testing-library** approach:
+
+-   Test from the user's perspective
+
+-   Prefer queries like `getByRole`, `getByLabelText` over implementation details
+
+-   Use Vitest as a fast test runner for fast feedback
+-   
+---
+
+📜 License
+----------
+
+MIT
