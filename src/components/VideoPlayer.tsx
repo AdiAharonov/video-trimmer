@@ -84,21 +84,15 @@ const VideoPlayer = () => {
 
   return (
     <div className={styles.videoPlayer}>
-      <input type="file" accept="video/*" onChange={handleFileChange} />
+      <label htmlFor="video-upload">Upload Video</label>
+      <input id="video-upload" type="file" accept="video/*" onChange={handleFileChange} />
 
       {videoSrc && (
         <>
-          <video
-            className={styles.videoElement}
-            ref={videoRef}
-            src={videoSrc}
-            controls
-          />
+          <video className={styles.videoElement} ref={videoRef} src={videoSrc} controls />
 
           <div style={{ marginTop: '1rem' }}>
-            <button onClick={togglePlay}>
-              {isPlaying ? 'Pause' : 'Play'}
-            </button>
+            <button onClick={togglePlay}>{isPlaying ? 'Pause' : 'Play'}</button>
 
             <button
               onClick={previewTrimmed}
@@ -114,11 +108,7 @@ const VideoPlayer = () => {
           </p>
 
           <div className={styles.timeline}>
-            <Timeline
-              currentTime={currentTime}
-              duration={duration}
-              onSeek={handleSeek}
-            />
+            <Timeline currentTime={currentTime} duration={duration} onSeek={handleSeek} />
           </div>
 
           <div className={styles.trimBar}>
