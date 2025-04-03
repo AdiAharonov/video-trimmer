@@ -3,6 +3,9 @@ import Timeline from './Timeline';
 import TrimBar from './TrimBar';
 import styles from '../styles/VideoPlayer.module.css';
 
+// Icons
+import { FaUpload } from 'react-icons/fa';
+
 const VideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -84,8 +87,17 @@ const VideoPlayer = () => {
 
   return (
     <div className={styles.videoPlayer}>
-      <label htmlFor="video-upload">Upload Video</label>
-      <input id="video-upload" type="file" accept="video/*" onChange={handleFileChange} />
+      <label htmlFor="video-upload" className={styles.uploadButton}>
+        <FaUpload style={{ marginRight: '8px' }} />
+        Upload Video
+      </label>
+      <input
+        id="video-upload"
+        type="file"
+        accept="video/*"
+        onChange={handleFileChange}
+        className={styles.uploadInput}
+      />
 
       {videoSrc && (
         <>
