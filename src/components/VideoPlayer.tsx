@@ -8,6 +8,7 @@ const VideoPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -18,6 +19,16 @@ const VideoPlayer = () => {
       setIsPlaying(true);
     } else {
       video.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const videoURL = URL.createObjectURL(file);
+      setVideoSrc(videoURL);
+      setCurrentTime(0);
       setIsPlaying(false);
     }
   };
@@ -36,29 +47,34 @@ const VideoPlayer = () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('timeupdate', handleTimeUpdate);
     };
-  }, []);
+  }, [videoSrc]);
 
   return (
     <div className={styles.videoPlayer}>
-      <video
-        className={styles.videoElement}
-        ref={videoRef}
-        src="/sample.mp4"
-        controls
-      />
-      <button onClick={togglePlay}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
-      <p>
-        Time: {currentTime.toFixed(1)} / {duration.toFixed(1)} seconds
-      </p>
+      <input type="file" accept="video/*" onChange={handleFileChange} />
+      {videoSrc && (
+        <>
+          <video
+            className={styles.videoElement}
+            ref={videoRef}
+            src={videoSrc}
+            controls
+          />
+          <button onClick={togglePlay}>
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
+          <p>
+            Time: {currentTime.toFixed(1)} / {duration.toFixed(1)} seconds
+          </p>
 
-      <div className={styles.timeline}>
-        <Timeline currentTime={currentTime} duration={duration} />
-      </div>
-      <div className={styles.trimBar}>
-        <TrimBar />
-      </div>
+          <div className={styles.timeline}>
+            <Timeline currentTime={currentTime} duration={duration} />
+          </div>
+          <div className={styles.trimBar}>
+            <TrimBar />
+          </div>
+        </>
+      )}
     </div>
   );
 };
