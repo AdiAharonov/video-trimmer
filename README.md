@@ -69,61 +69,89 @@ yarn test       # run tests`
 
 │   └── VideoPlayer.module.css
 
+├── hooks/
+
+│   ├── useThumbnails.ts
+
+│   ├── useTrim.ts
+
+│   ├── useVideoControls.ts
+
+│   └── __tests__/
+
+│       ├── useThumbnails.test.ts
+
+│       ├── useTrim.test.ts
+
+│       └── useVideoControls.test.ts
+
 ├── App.tsx
 
 ├── main.tsx
 
 ├── setupTests.ts
 
-vite.config.ts`
+└── vite.config.ts
 ```
 
 ---
 
-### ✅ Core Functionality
+ ✅ Core Functionality
+-----------------
+-   **Upload a video** from the local file system
 
--   Upload a video from local file system
+-   **Display video** with HTML5 `<video>` tag
 
--   Display video with HTML5 `<video>` tag
+-   **Seekable timeline**: Click to seek to any time
 
--   Clickable timeline to seek to any time
+-   **Draggable trim handles** to adjust the start/end points for trimming
 
--   Draggable trim handles for start/end points
+-   **Preview trimmed segment**: Play only the selected segment without modifying the original file
 
--   Preview only the selected trimmed segment without modifying the original file
--   Export trimmed segment (UI only — requires media processing like ffmpeg)
+-   **Export trimmed segment**: UI functionality (media processing like ffmpeg integration required for export)
 -   
 
 ---
+ ✅ Developer Features
+-----------------
 
-### ✅ Developer Features
+-   **ESLint** with Airbnb + TypeScript config to maintain code quality
 
--   ESLint with Airbnb + TypeScript config
+-   **Prettier** auto-formatting to keep code consistent
 
--   Prettier auto-formatting
+-   **Strict typing with TypeScript** to catch errors early
 
--   Strict typing with TypeScript
+-   **Fully testable React components** with unit and integration tests
 
--   Fully testable React components
+-   **`jest-dom` matchers** for semantic assertions in tests
 
--   `jest-dom` matchers for semantic assertions
+-   **Mocked `URL.createObjectURL`** for testing video uploads
 
--   Mocked `URL.createObjectURL` for testing video uploads
--   
+-   **Responsive design**: The app is fully responsive and looks great on all screen sizes, with a clean, modern aesthetic
+---
+
+ Hooks & Components
+-----------------
+ **useThumbnails**: Handles the generation of video thumbnails from a given video file. Thumbnails are used in the trim bar for easier interaction.
+
+ **useVideoControls**: Manages video playback controls, including play/pause, seeking, and tracking the current time and video duration.
+
+ **useTrim**: Contains logic for trimming video segments, including setting start and end points, previewing the trimmed segment, and handling the download functionality.
+
 ---
 
 🧪 Tests Included
 -----------------
 
--   File input renders and accepts files
+-   **File input renders and accepts files**: Ensures video uploads are handled correctly
 
--   Timeline and trim bar conditionally rendered
+    -   **Timeline and trim bar conditionally rendered**: Check if these components appear when a video is loaded
 
--   Play/Pause toggle works as expected
+    -   **Play/Pause toggle works as expected**: Ensures video control buttons function as expected
 
--   Preview trim functionality plays the defined segment
+    -   **Preview trim functionality plays the defined segment**: Ensures trimming preview works
 
--   All tests run in a `jsdom`-mocked environment 
+    -   **All tests run in a `jsdom`-mocked environment**: Simulates the browser for unit testing with no need for a real DOM
 ---
 
 📜 License
