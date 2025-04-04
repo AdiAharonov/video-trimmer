@@ -7,32 +7,36 @@ import styles from '../styles/VideoPlayer.module.css';
 import { FaUpload, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { MdContentCut } from 'react-icons/md';
 
+/**
+ * VideoPlayer component handles video playback, trimming logic,
+ * thumbnail generation, and downloading the trimmed segment.
+ */
 const VideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isTrimming, setIsTrimming] = useState<boolean>(false);
-  const [duration, setDuration] = useState<number>(0);
-  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isTrimming, setIsTrimming] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
-  const [trimStart, setTrimStart] = useState<number>(0);
-  const [trimEnd, setTrimEnd] = useState<number>(0);
+  const [trimStart, setTrimStart] = useState(0);
+  const [trimEnd, setTrimEnd] = useState(0);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
 
+  /**
+   * Toggles video playback.
+   */
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
-
-    if (video.paused) {
-      video.play();
-      setIsPlaying(true);
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
+    video.paused ? video.play() : video.pause();
+    setIsPlaying(!video.paused);
   };
 
+  /**
+   * Handles file input change and loads video.
+   */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -45,12 +49,18 @@ const VideoPlayer = () => {
     }
   };
 
+  /**
+   * Seeks video to specified time.
+   */
   const handleSeek = (time: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = time;
     }
   };
 
+  /**
+   * Starts playback from trimStart and pauses at trimEnd.
+   */
   const previewTrimmed = () => {
     if (videoRef.current) {
       videoRef.current.currentTime = trimStart;
@@ -60,28 +70,31 @@ const VideoPlayer = () => {
     }
   };
 
+  /**
+   * Generates thumbnails for the timeline from the video.
+   */
   const generateThumbnails = async (videoDuration: number, videoSrc: string) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-  
+
     const offscreenVideo = document.createElement('video');
     offscreenVideo.src = videoSrc;
     offscreenVideo.muted = true;
     offscreenVideo.crossOrigin = 'anonymous';
-  
+
     await new Promise<void>((resolve) => {
       offscreenVideo.addEventListener('loadedmetadata', () => resolve());
     });
-  
+
     const frames: string[] = [];
     const numberOfThumbnails = 10;
     canvas.width = 160;
     canvas.height = 90;
-  
+
     for (let i = 0; i < numberOfThumbnails; i++) {
       const time = (i / numberOfThumbnails) * videoDuration;
-  
+
       await new Promise<void>((resolve) => {
         const seekHandler = () => {
           ctx.drawImage(offscreenVideo, 0, 0, canvas.width, canvas.height);
@@ -89,15 +102,18 @@ const VideoPlayer = () => {
           offscreenVideo.removeEventListener('seeked', seekHandler);
           resolve();
         };
-  
+
         offscreenVideo.addEventListener('seeked', seekHandler);
         offscreenVideo.currentTime = time;
       });
     }
-  
+
     setThumbnails(frames);
   };
-  
+
+  /**
+   * Records trimmed segment using MediaRecorder.
+   */
   const recordTrimmedSegment = async (
     videoEl: HTMLVideoElement,
     trimStart: number,
@@ -108,16 +124,16 @@ const VideoPlayer = () => {
         reject(new Error('MediaRecorder not supported'));
         return;
       }
-  
+
       const stream = videoEl.captureStream();
       const recorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
-  
+
       recorder.ondataavailable = (e) => chunks.push(e.data);
       recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
-  
+
       videoEl.currentTime = trimStart;
-  
+
       const onTimeUpdate = () => {
         if (videoEl.currentTime >= trimEnd) {
           videoEl.pause();
@@ -125,13 +141,16 @@ const VideoPlayer = () => {
           videoEl.removeEventListener('timeupdate', onTimeUpdate);
         }
       };
-  
+
       videoEl.addEventListener('timeupdate', onTimeUpdate);
       recorder.start();
       videoEl.play();
     });
   };
 
+  /**
+   * Downloads the recorded video segment as a file.
+   */
   const handleDownload = async () => {
     if (!videoRef.current) return;
     try {
@@ -146,8 +165,6 @@ const VideoPlayer = () => {
       console.error('Recording failed', err);
     }
   };
-  
-  
 
   useEffect(() => {
     const video = videoRef.current;
@@ -156,11 +173,7 @@ const VideoPlayer = () => {
     const handleLoadedMetadata = () => {
       const newDuration = video.duration;
       setDuration(newDuration);
-
-      requestAnimationFrame(() => {
-        generateThumbnails(newDuration, video.src);
-
-      });
+      requestAnimationFrame(() => generateThumbnails(newDuration, video.src));
     };
 
     const handleTimeUpdate = () => {
@@ -168,9 +181,9 @@ const VideoPlayer = () => {
       setCurrentTime(current);
 
       if (isTrimming && current >= trimEnd - 0.05) {
-          video.pause();
-          setIsPlaying(false);
-          setIsTrimming(false);
+        video.pause();
+        setIsPlaying(false);
+        setIsTrimming(false);
       }
     };
 
@@ -247,7 +260,7 @@ const VideoPlayer = () => {
               setTrimStart={setTrimStart}
               setTrimEnd={setTrimEnd}
               thumbnails={thumbnails}
-              currentTime={currentTime} 
+              currentTime={currentTime}
             />
           </div>
         </>
