@@ -9,6 +9,7 @@ import { MdContentCut } from 'react-icons/md';
 
 // Hooks
 import { useThumbnails } from '../hooks/useThumbnails';
+import { useVideoControls } from '../hooks/useVideoControls';
 
 
 /**
@@ -16,28 +17,26 @@ import { useThumbnails } from '../hooks/useThumbnails';
  * thumbnail generation, and downloading the trimmed segment.
  */
 const VideoPlayer = () => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isTrimming, setIsTrimming] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [trimStart, setTrimStart] = useState(0);
   const [trimEnd, setTrimEnd] = useState(0);
 
+  const {
+    videoRef,
+    isPlaying,
+    setIsPlaying,
+    currentTime,
+    setCurrentTime,
+    duration,
+    setDuration,
+    togglePlay,
+    seek,
+  } = useVideoControls();
   const { thumbnails, generateThumbnails } = useThumbnails();
 
 
-  /**
-   * Toggles video playback.
-   */
-  const togglePlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.paused ? video.play() : video.pause();
-    setIsPlaying(!video.paused);
-  };
 
   /**
    * Handles file input change and loads video.
@@ -54,14 +53,6 @@ const VideoPlayer = () => {
     }
   };
 
-  /**
-   * Seeks video to specified time.
-   */
-  const handleSeek = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-    }
-  };
 
   /**
    * Starts playback from trimStart and pauses at trimEnd.
@@ -215,7 +206,7 @@ const VideoPlayer = () => {
           </p>
 
           <div className={styles.timeline}>
-            <Timeline currentTime={currentTime} duration={duration} onSeek={handleSeek} />
+            <Timeline currentTime={currentTime} duration={duration} onSeek={seek} />
           </div>
 
           <div className={styles.trimBar}>
