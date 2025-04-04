@@ -10,6 +10,7 @@ import { MdContentCut } from 'react-icons/md';
 // Hooks
 import { useThumbnails } from '../hooks/useThumbnails';
 import { useVideoControls } from '../hooks/useVideoControls';
+import { useTrim } from '../hooks/useTrim';
 
 
 /**
@@ -18,10 +19,7 @@ import { useVideoControls } from '../hooks/useVideoControls';
  */
 const VideoPlayer = () => {
 
-  const [isTrimming, setIsTrimming] = useState(false);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(0);
 
   const {
     videoRef,
@@ -34,8 +32,20 @@ const VideoPlayer = () => {
     togglePlay,
     seek,
   } = useVideoControls();
-  const { thumbnails, generateThumbnails } = useThumbnails();
 
+  const {
+    trimStart,
+    trimEnd,
+    setTrimStart,
+    setTrimEnd,
+    previewTrimmed,
+    handleDownload,
+    isTrimming,
+    setIsTrimming,
+  } = useTrim(videoRef);
+  
+  const { thumbnails, generateThumbnails } = useThumbnails();
+  
 
 
   /**
@@ -50,76 +60,6 @@ const VideoPlayer = () => {
       setIsPlaying(false);
       setTrimStart(0);
       setTrimEnd(0);
-    }
-  };
-
-
-  /**
-   * Starts playback from trimStart and pauses at trimEnd.
-   */
-  const previewTrimmed = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = trimStart;
-      videoRef.current.play();
-      setIsPlaying(true);
-      setIsTrimming(true);
-    }
-  };
-
-
-  
-  /**
-   * Records trimmed segment using MediaRecorder.
-   */
-  const recordTrimmedSegment = async (
-    videoEl: HTMLVideoElement,
-    trimStart: number,
-    trimEnd: number
-  ) => {
-    return new Promise<Blob>((resolve, reject) => {
-      if (!('MediaRecorder' in window)) {
-        reject(new Error('MediaRecorder not supported'));
-        return;
-      }
-
-      const stream = videoEl.captureStream();
-      const recorder = new MediaRecorder(stream);
-      const chunks: BlobPart[] = [];
-
-      recorder.ondataavailable = (e) => chunks.push(e.data);
-      recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
-
-      videoEl.currentTime = trimStart;
-
-      const onTimeUpdate = () => {
-        if (videoEl.currentTime >= trimEnd) {
-          videoEl.pause();
-          recorder.stop();
-          videoEl.removeEventListener('timeupdate', onTimeUpdate);
-        }
-      };
-
-      videoEl.addEventListener('timeupdate', onTimeUpdate);
-      recorder.start();
-      videoEl.play();
-    });
-  };
-
-  /**
-   * Downloads the recorded video segment as a file.
-   */
-  const handleDownload = async () => {
-    if (!videoRef.current) return;
-    try {
-      const blob = await recordTrimmedSegment(videoRef.current, trimStart, trimEnd);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'trimmed-video.webm';
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Recording failed', err);
     }
   };
 
