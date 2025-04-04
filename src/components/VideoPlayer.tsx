@@ -7,6 +7,10 @@ import styles from '../styles/VideoPlayer.module.css';
 import { FaUpload, FaPlay, FaPause, FaDownload } from 'react-icons/fa';
 import { MdContentCut } from 'react-icons/md';
 
+// Hooks
+import { useThumbnails } from '../hooks/useThumbnails';
+
+
 /**
  * VideoPlayer component handles video playback, trimming logic,
  * thumbnail generation, and downloading the trimmed segment.
@@ -21,8 +25,9 @@ const VideoPlayer = () => {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [trimStart, setTrimStart] = useState(0);
   const [trimEnd, setTrimEnd] = useState(0);
-  const [thumbnails, setThumbnails] = useState<string[]>([]);
-  const [isGeneratingThumbnails, setIsGeneratingThumbnails] = useState(false);
+
+  const { thumbnails, generateThumbnails } = useThumbnails();
+
 
   /**
    * Toggles video playback.
@@ -70,47 +75,8 @@ const VideoPlayer = () => {
     }
   };
 
-  /**
-   * Generates thumbnails for the timeline from the video.
-   */
-  const generateThumbnails = async (videoDuration: number, videoSrc: string) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
 
-    const offscreenVideo = document.createElement('video');
-    offscreenVideo.src = videoSrc;
-    offscreenVideo.muted = true;
-    offscreenVideo.crossOrigin = 'anonymous';
-
-    await new Promise<void>((resolve) => {
-      offscreenVideo.addEventListener('loadedmetadata', () => resolve());
-    });
-
-    const frames: string[] = [];
-    const numberOfThumbnails = 10;
-    canvas.width = 160;
-    canvas.height = 90;
-
-    for (let i = 0; i < numberOfThumbnails; i++) {
-      const time = (i / numberOfThumbnails) * videoDuration;
-
-      await new Promise<void>((resolve) => {
-        const seekHandler = () => {
-          ctx.drawImage(offscreenVideo, 0, 0, canvas.width, canvas.height);
-          frames.push(canvas.toDataURL());
-          offscreenVideo.removeEventListener('seeked', seekHandler);
-          resolve();
-        };
-
-        offscreenVideo.addEventListener('seeked', seekHandler);
-        offscreenVideo.currentTime = time;
-      });
-    }
-
-    setThumbnails(frames);
-  };
-
+  
   /**
    * Records trimmed segment using MediaRecorder.
    */
@@ -216,7 +182,7 @@ const VideoPlayer = () => {
             className={styles.videoElement}
             ref={videoRef}
             src={videoSrc}
-            controls={!isGeneratingThumbnails}
+            controls
           />
 
           <div className={styles.buttonGroup}>
