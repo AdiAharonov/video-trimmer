@@ -43,7 +43,7 @@ const VideoPlayer = () => {
     isTrimming,
     setIsTrimming,
   } = useTrim(videoRef);
-  
+
   const { thumbnails, generateThumbnails } = useThumbnails();
   
 
@@ -145,10 +145,6 @@ const VideoPlayer = () => {
             Time: {currentTime.toFixed(1)} / {duration.toFixed(1)} seconds
           </p>
 
-          <div className={styles.timeline}>
-            <Timeline currentTime={currentTime} duration={duration} onSeek={seek} />
-          </div>
-
           <div className={styles.trimBar}>
             <TrimBar
               duration={duration}
@@ -160,6 +156,10 @@ const VideoPlayer = () => {
               currentTime={currentTime}
             />
           </div>
+          <div className={styles.timeline}>
+            <Timeline currentTime={currentTime} duration={duration} onSeek={seek} />
+          </div>
+
         </>
       )}
     </div>

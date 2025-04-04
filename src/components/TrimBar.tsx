@@ -161,9 +161,10 @@ const TrimBar = ({
             left: `${currentPercent}%`,
             top: 0,
             bottom: 0,
-            width: '2px',
-            backgroundColor: '#fffa',
-            zIndex: 3,
+            width: '3px',
+            backgroundColor: '#fff',
+            zIndex: 10,
+            boxShadow: '1px 6px 7px 1px rgba(40, 40, 44, 0.2)',
             pointerEvents: 'none',
           }}
         />
@@ -174,8 +175,9 @@ const TrimBar = ({
             position: 'absolute',
             left: `${startPercent}%`,
             width: `${endPercent - startPercent}%`,
-            height: '100%',
+            height: '93%',
             backgroundColor: 'rgba(60, 235, 121, 0.16)',
+            border: 'solid 2px rgba(60, 235, 121, 0.4) ',
             zIndex: 2,
           }}
         />
@@ -193,8 +195,7 @@ const TrimBar = ({
             backgroundColor: '#1db954',
             cursor: 'ew-resize',
             zIndex: 4,
-            borderRadius: '4px',
-            //   transform: 'translateX(-50%)'
+            borderRadius: '2px',
           }}
         />
 
@@ -210,7 +211,7 @@ const TrimBar = ({
             backgroundColor: '#1db954',
             cursor: 'ew-resize',
             zIndex: 4,
-            borderRadius: '4px',
+            borderRadius: '2px',
             transform: endPercent < 97 ? 'translateX(0)' : 'translateX(-100%)',
           }}
         />
