@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 /**
  * Hook to generate video thumbnails using an offscreen video and canvas.
- * @returns `thumbnails` array and `generateThumbnails` function
+ * @returns `thumbnails` array, `generateThumbnails` function and `isGenerating` boolean
  */
 export const useThumbnails = () => {
   const [thumbnails, setThumbnails] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
   /**
    * Generate thumbnails from a video by capturing frames at even intervals.
@@ -13,9 +14,13 @@ export const useThumbnails = () => {
    * @param videoSrc The source URL of the video file.
    */
   const generateThumbnails = async (videoDuration: number, videoSrc: string) => {
+    setIsGenerating(true)
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      setIsGenerating(false)
+      return;
+    }
 
     const offscreenVideo = document.createElement('video');
     offscreenVideo.src = videoSrc;
@@ -48,7 +53,8 @@ export const useThumbnails = () => {
     }
 
     setThumbnails(frames);
+    setIsGenerating(false)
   };
 
-  return { thumbnails, generateThumbnails };
+  return { thumbnails, generateThumbnails, isGenerating };
 };
