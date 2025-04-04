@@ -98,6 +98,55 @@ const VideoPlayer = () => {
     setThumbnails(frames);
   };
   
+  const recordTrimmedSegment = async (
+    videoEl: HTMLVideoElement,
+    trimStart: number,
+    trimEnd: number
+  ) => {
+    return new Promise<Blob>((resolve, reject) => {
+      if (!('MediaRecorder' in window)) {
+        reject(new Error('MediaRecorder not supported'));
+        return;
+      }
+  
+      const stream = videoEl.captureStream();
+      const recorder = new MediaRecorder(stream);
+      const chunks: BlobPart[] = [];
+  
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+  
+      videoEl.currentTime = trimStart;
+  
+      const onTimeUpdate = () => {
+        if (videoEl.currentTime >= trimEnd) {
+          videoEl.pause();
+          recorder.stop();
+          videoEl.removeEventListener('timeupdate', onTimeUpdate);
+        }
+      };
+  
+      videoEl.addEventListener('timeupdate', onTimeUpdate);
+      recorder.start();
+      videoEl.play();
+    });
+  };
+
+  const handleDownload = async () => {
+    if (!videoRef.current) return;
+    try {
+      const blob = await recordTrimmedSegment(videoRef.current, trimStart, trimEnd);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'trimmed-video.webm';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Recording failed', err);
+    }
+  };
+  
   
 
   useEffect(() => {
@@ -172,9 +221,9 @@ const VideoPlayer = () => {
             </button>
 
             <button
-              onClick={() => alert('Export is not yet implemented.')}
-              disabled
-              title="Exporting would require ffmpeg.wasm or a backend service"
+              onClick={handleDownload}
+              disabled={trimEnd <= trimStart}
+              title="Will export the desired section"
               className={styles.actionButton}
             >
               <FaDownload style={{ marginRight: 4 }} />
