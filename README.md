@@ -27,13 +27,13 @@ cd video-trimmer
 ### 2\. Install dependencies
 
 ```bash
-`yarn`
+yarn
 ```
 
 ### 3\. Run the development server
 
 ```bash
-`yarn dev`
+yarn dev
 ```
 
 ### 4\. Lint, format, and test
