@@ -49,7 +49,7 @@ yarn test       # run tests`
 --------------------
 
 ```css
-`src/
+src/
 
 ├── components/
 
