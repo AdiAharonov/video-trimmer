@@ -2,8 +2,9 @@
   font-family: sans-serif;
   padding: 2rem;
   text-align: center;
-  background-color: #2f3844;
+  background-color: #23262a;
   min-height: 100vh;
+  min-width: 100%;
 }
 
 
@@ -19,6 +20,12 @@
   background: #eee;
   padding: 0.5rem;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 1rem;
+  }
 }
 
 

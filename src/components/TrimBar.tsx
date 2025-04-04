@@ -175,9 +175,10 @@ const TrimBar = ({
             position: 'absolute',
             left: `${startPercent}%`,
             width: `${endPercent - startPercent}%`,
-            height: '93%',
+            height: '100%',
             backgroundColor: 'rgba(60, 235, 121, 0.16)',
-            border: 'solid 2px rgba(60, 235, 121, 0.4) ',
+            borderTop: 'solid 2px rgba(60, 235, 121, 0.4) ',
+            borderBottom: 'solid 2px rgba(60, 235, 121, 0.4) ',
             zIndex: 2,
           }}
         />

@@ -1,40 +1,67 @@
-:root {
+/* Basic Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure full height and width for html and body */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
-
   color-scheme: light dark;
+  background-color: #242424; /* Dark theme background */
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Make root container take full width and height */
+#root {
+  height: 100%; /* Full height */
+  width: 100%; /* Full width */
+  background-color: var(--background-dark);
+}
+
+/* Center the main content */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #242424;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Body Text */
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+
+/* Links */
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* Buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -45,24 +72,87 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  margin: 10px;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Inputs */
+input[type="file"] {
+  display: none;
+}
+
+input[type="file"] + label {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #1a1a1a;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  margin: 20px;
+}
+
+/* Customize Video Player Styles */
+.videoPlayer {
+  width: 100%;
+  max-width: 800px;
+  background-color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Group */
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Timeline and Trim Bar */
+.timeline,
+.trimBar {
+  margin-top: 20px;
+}
+
+/* Dark Theme */
+:root {
+  --background-dark: #242424;
+  --text-dark: rgba(255, 255, 255, 0.87);
+}
+
+/* Light Theme */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --background-dark: #ffffff;
+    --text-dark: #000000;
   }
-  a:hover {
-    color: #747bff;
+
+  body {
+    background-color: #f4f4f4;
+    color: #333;
   }
+
   button {
     background-color: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+
+  button:hover {
+    border-color: #535bf2;
+  }
+
+  .videoPlayer {
+    background-color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
 }
