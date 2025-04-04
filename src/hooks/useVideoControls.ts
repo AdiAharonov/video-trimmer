@@ -1,9 +1,24 @@
-/**
- * useVideoControls
- * Handles all video control logic such as play/pause, seek, and tracking current time & duration.
- */
 
 import { useRef, useState, useEffect } from 'react';
+
+/**
+ * useVideoControls
+ *
+ * A custom React hook that centralizes logic for controlling an HTMLVideoElement.
+ * It manages playback state, current playback time, and video duration while
+ * exposing control methods and references for integration in a video player component.
+ *
+ * Returns:
+ * - videoRef: Ref<HTMLVideoElement | null> — React ref to attach to a <video> element.
+ * - isPlaying: boolean — Indicates whether the video is currently playing.
+ * - setIsPlaying: Dispatch<SetStateAction<boolean>> — Setter to manually change isPlaying state.
+ * - currentTime: number — The current time of the video in seconds.
+ * - setCurrentTime: Dispatch<SetStateAction<number>> — Setter to manually update the current time.
+ * - duration: number — The total duration of the video in seconds.
+ * - setDuration: Dispatch<SetStateAction<number>> — Setter to manually update the duration.
+ * - togglePlay: () => void — Function to toggle video playback.
+ * - seek: (time: number) => void — Function to seek the video to a specific time in seconds.
+ */
 
 export const useVideoControls = () => {
   /** Reference to the video HTML element */
